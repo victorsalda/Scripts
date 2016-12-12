@@ -1,0 +1,135 @@
+---
+title: "Statistical Inference Peer Assignment 2: Basic inferential data analysis."
+output: html_document
+---
+####**Victor D. Saldaña C.**
+######PhD(c) in Geoinformatics Engineering
+######Technical University of Madrid (Spain)
+######https://es.linkedin.com/in/victorsalda
+######https://github.com/victorsalda
+######*September 2016*
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+###**Overview.**
+This is the report of the second part of the Statistical Inference Peer Assignment: **Basic inferential data analysis**. It includes supporting material such as the codes and figures.
+
+###**1. Load packages.**
+```{r}
+library("ggplot2")
+library("knitr")
+library("datasets")
+library("ggplot2")
+library("ggpmisc")
+library("gridExtra")
+library("plyr")
+```
+
+###**2. Reproducibility.**
+```{r}
+# Set the seed (55) for reproducibility, i.e., make available to others the data to verify
+#the calculations made with the code. 
+set.seed(55)
+```
+
+###**3. Load the data.**
+```{r}
+#3. Load the data.
+#The data we are going to use in this part of the assignment is the ToothGrowth.
+data("ToothGrowth")
+df<-ToothGrowth
+```
+
+###**4. Basic summary of the data.**
+```{r}
+#Let's summarize and do some tables and quick plots with cluster to explore the data. 
+summary(df)
+table(df$supp, df$dose)
+```
+
+###**5. Confidence intervals and/or hypothesis tests.**
+```{r}
+#Let's calculate the confidence intervals (ci) for the mean len of the sample with a #confidence level of 95%
+mean_tooth<-mean(ToothGrowth$len)
+ci<-mean_tooth + c(-1, 1) * 1.96 * sd(ToothGrowth$len)/sqrt(nrow(ToothGrowth))
+paste("mean=",round(mean_tooth,3),",","ci_min=",round(ci[1],3),",","ci_max=",round(ci[2],3))
+
+#Now, let's get the same values by supplement type and dose.    
+means_by_supp<-tapply(ToothGrowth$len,ToothGrowth$supp,mean)
+means_by_dose<-tapply(ToothGrowth$len,ToothGrowth$dose,mean)
+
+ci_supp_OJ<-means_by_supp[1] + c(-1, 1) * 1.96 * 
+sd(ToothGrowth[ToothGrowth$supp=="OJ",]$len)/sqrt(nrow(ToothGrowth[ToothGrowth$supp=="OJ",]))
+ci_supp_VC<-means_by_supp[2] + c(-1, 1) * 1.96 * 
+sd(ToothGrowth[ToothGrowth$supp=="VC",]$len)/sqrt(nrow(ToothGrowth[ToothGrowth$supp=="VC",]))
+
+ci_dose_0.5<-means_by_dose[1] + c(-1, 1) * 1.96 * 
+sd(ToothGrowth[ToothGrowth$dose==0.5,]$len)/sqrt(nrow(ToothGrowth[ToothGrowth$dose==0.5,]))
+ci_dose_1.0<-means_by_dose[2] + c(-1, 1) * 1.96 * 
+sd(ToothGrowth[ToothGrowth$dose==1.0,]$len)/sqrt(nrow(ToothGrowth[ToothGrowth$dose==1.0,]))
+ci_dose_2.0<-means_by_dose[3] + c(-1, 1) * 1.96 * 
+sd(ToothGrowth[ToothGrowth$dose==2.0,]$len)/sqrt(nrow(ToothGrowth[ToothGrowth$dose==2.0,]))
+
+#Let's calculate the range of the interval.
+dif_supp_OJ<-ci_supp_OJ[2]-ci_supp_OJ[1]
+dif_supp_VC<-ci_supp_VC[2]-ci_supp_VC[1]
+dif_dose_0.5<-ci_dose_0.5[2]-ci_dose_0.5[1]
+dif_dose_1.0<-ci_dose_1.0[2]-ci_dose_1.0[1]
+dif_dose_2.0<-ci_dose_2.0[2]-ci_dose_2.0[1]
+```
+
+```{r echo=FALSE}
+paste("mean_by_OJ=",round(means_by_supp[1],3),",","ci_min=",round(ci_supp_OJ[1],3),",","ci_max=",round(ci_supp_OJ[2],3),",","dif_ci=",round(dif_supp_OJ,3))
+paste("mean_by_VC=",round(means_by_supp[2],3),",","ci_min=",round(ci_supp_VC[1],3),",","ci_max=",round(ci_supp_VC[2],3),",","dif_ci=",round(dif_supp_VC,3))
+paste("mean_by_dose_of_0.5=",round(means_by_dose[1],3),",","ci_min=",round(ci_dose_0.5[1],3),",","ci_max=",round(ci_dose_0.5[2],3),",","dif_ci=",round(dif_dose_0.5,3))
+paste("mean_by_dose_of_1.0=",round(means_by_dose[2],3),",","ci_min=",round(ci_dose_1.0[1],3),",","ci_max=",round(ci_dose_1.0[2],3),",","dif_ci=",round(dif_dose_1.0,3))
+paste("mean_by_dose_of_2.0=",round(means_by_dose[3],3),",","ci_min=",round(ci_dose_2.0[1],3),",","ci_max=",round(ci_dose_2.0[2],3),",","dif_ci=",round(dif_dose_2.0,3))
+```
+
+```{r}
+#Let's consider dose and supp at the same time. Let's suppose len (Tooth Length) is normal #distributed. So, no matter the sample size the distribution of the sample mean is normally #distributed, as well. Let's also assume that the 60 observations are independent. Now, let's also
+#suppose that the sample have been divided randomly in two groups of 30 individuals. One of these #groups (OJ or VC). We can consider that the two groups are sample from two different population, and let suppose these two population have the same variance. 
+
+#Therefore, we have two samples of 30 observations each from two population with the len variable #is normally distributed and not have the same variance. Now we want to evaluate is the difference #in the mean of the len in both group is just by chance or depends on the supplement and dose. So, #the null hypothesis we want to contrast is that the mean difference between the two is zero (0).
+#Let's do this contrast first with all doses together and then by dose. In any case, with a 95% #confidence levels, so that we have only a 5% chance of making a Type I error.
+
+t.test(ToothGrowth[ToothGrowth$supp=="OJ",]$len, y = ToothGrowth[ToothGrowth$supp=="VC",]$len, alternative = "two.sided", mu = 0, paired = FALSE, var.equal = TRUE, conf.level = 0.95)
+```
+
+```{r echo=FALSE}
+#dose:0.5 mg/day. 
+pv_0.5<-(t.test(ToothGrowth[ToothGrowth$supp=="OJ"&ToothGrowth$dose==0.5,]$len, y = ToothGrowth[ToothGrowth$supp=="VC"&ToothGrowth$dose==0.5,]$len, alternative = "two.sided", mu = 0,paired = FALSE, var.equal = TRUE, conf.level = 0.95))[3]
+
+#dose:1.0 mg/day. 
+pv_1.0<-(t.test(ToothGrowth[ToothGrowth$supp=="OJ"&ToothGrowth$dose==1.0,]$len, y = ToothGrowth[ToothGrowth$supp=="VC"&ToothGrowth$dose==1.0,]$len, alternative = "two.sided", mu = 0,paired = FALSE, var.equal = TRUE, conf.level = 0.95))[3]
+
+#dose:2.0 mg/day. 
+pv_2.0<-(t.test(ToothGrowth[ToothGrowth$supp=="OJ"&ToothGrowth$dose==2.0,]$len, y = ToothGrowth[ToothGrowth$supp=="VC"&ToothGrowth$dose==2.0,]$len, alternative = "two.sided", mu = 0,paired = FALSE, var.equal = TRUE, conf.level = 0.95))[3]
+
+```
+
+
+```{r}
+#Now, let's do the same by dose.  
+#P-values.
+paste("pv_0.5=",round(as.numeric(pv_0.5),6),",","pv_1.0=",round(as.numeric(pv_1.0),6),",","pv_2.0=",round(as.numeric(pv_2.0),5))
+
+```
+
+###**6. Assumptions and conclusions.**
+####**6.1. Assumptions.**
+######In this analysis I have assume that:
+######1. The len (Tooth Length) variable is normal distributed.
+######2. The 60 observations in the sample are independent. 
+######3. The sample has been divided randomly in two groups of 30 individuals. Every group was given a different supplement. 
+######4. Every group have the same variance. 
+######5. For doing hypothesis tests the null hypothesis is that there is not difference between means of the groups.  
+######6. The confidence level to contrast the hypothesis is 95%. So, the significance level is 5% and any p value greater than this value rejects the hypothesis.  
+
+####**6.2. Conclusions.**
+######1. The mean of the len including all both supplement and doses (60 obs.) is 18.813. 
+######2. Divided by supplement the growth by Orange Juice (OJ) is 20.663 and by Vitamin C (VC) is 16.963.
+######3. Under the assumptions this difference by supplement (20.663 -16.963=3.700) is significant because the p value is 6.039% which is greater than the 5% of significance level. Therefore, the null hypothesis is rejected. 
+######4. Doing a hypothesis test by dose the results suggest that only in the case of dose=2.0 mg/day the difference is by chance. In the others cases (0.5 y 1.0 mg/day) the evidence is strong enough to reject the null hypothesis.   

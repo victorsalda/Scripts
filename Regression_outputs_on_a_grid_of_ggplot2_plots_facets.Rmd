@@ -1,0 +1,87 @@
+---
+title: "Regression outputs on a grid of ggplot2 plots (facets)"
+output: html_document
+---
+####**Victor D. Saldaña C.**
+######PhD(c) in Geoinformatics Engineering
+######Technical University of Madrid (Spain)
+######https://es.linkedin.com/in/victorsalda
+######https://github.com/victorsalda
+######*June 2016*
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+###**Overview.**
+####This script allows to add to a group of ggplot2 plots laid out in panels with facets_grid 
+####the values of the slope, intercept, R^2 and adjusted R^2 of every plot.
+
+###**Context.**
+####Let's suppose you have a data frame with some interesting data and you want 
+####to do some regression to fit a linear model with a straight line. Likewise, you want
+####to do the regression analysis by sub setting the data. In this case, ggplot2 package
+####offers a good set of tools to do it by dividing the date using "facets" that divides 
+####the data frame according to the values of certain column. If the column you use to subset
+####the data frame have four values you will get four plots with its own regression line. Now,
+####if you want to add the regression equation and/or others values to compare them is 
+####not possible with gggplot2, at least, in a direct way. Here is an option. 
+
+###**1. Load packages.**
+```{r }
+#1. Let's load the packages we need. If you haven't download them do it first.
+library("ggplot2")
+library("datasets")
+library("plyr")
+```
+
+###**2. Create a function.**
+```{r}
+#2. We need to create a function. Let's call it "regression". It has only one argument, 
+#the data frame (df). Likewise, let's use the "Toothgrowth" dataset from the package 
+#“datasets”. This dataset contains 60 observations of "the Effect of Vitamin C on 
+#Tooth Growth in Guinea Pigs". There are three variables: 
+#1) Len (Tooth Length, numeric).
+#2) Supp (Supplement Type, OJ = orange juice or VC = vitamin C, factor).
+#3) Dose (Dose levels of vitamin, 0.5, 1, and 2 mg/day, numeric).
+
+#2.1. Load the data and set a data frame (df).
+data("ToothGrowth") #Load the dataset "ToothGrowth"
+df<-ToothGrowth # Assigning it to a variables. 
+
+#2.2. Create function.
+regression=function(df){
+        #setting the regression function. 
+        reg_fun<-lm(formula=df$len~df$dose) #regression function
+        #getting the slope, intercept, R square and adjusted R squared of 
+        #the regression function (with 3 decimals).
+        slope<-round(coef(reg_fun)[2],3)  
+        intercept<-round(coef(reg_fun)[1],3) 
+        R2<-round(as.numeric(summary(reg_fun)[8]),3)
+        R2.Adj<-round(as.numeric(summary(reg_fun)[9]),3)
+        c(slope,intercept,R2,R2.Adj)
+        }
+```
+
+###**3.Subset the data frame.**
+```{r}
+#3. Now let's subset the data frame base on the values of the supplement type (supp) and
+#let's apply the function "regression" to every data frame. To achieve this
+#let's use the "ddply" function from the "plyr". The results in this case is another
+#data frame (regressions_data) whose rows are the valeus of the slope, intercept, 
+#R_squared and R_squared_adj for every data frame.
+regressions_data<-ddply(ToothGrowth,"supp",regression)
+colnames(regressions_data)<-c ("supp","slope","intercept","R2","R2.Adj")
+```
+
+###**4. Plotting.**[^1][^2]
+```{r}
+#4. Let's plot all the plots and the values of the regression models. 
+qplot(dose, len, data = ToothGrowth, size=I(2))+geom_smooth(method="lm")+
+        facet_grid(supp ~ .)+ggtitle("Regressions")+
+        geom_label(data=regressions_data, inherit.aes=FALSE, aes(x = 1.2, y = 32,
+label=paste("slope=",slope,","," ","intercept=",intercept,","," ","R^2=",R2,","," ","R^2.Adj=",R2.Adj)))
+```
+
+[^1]:1. If you don't want a rectangle underneath the text use "geom_text" insted of "geom_label".
+[^2]:2. is possible much more customization. Check out the help file of facets_grid, geom_label, etc.

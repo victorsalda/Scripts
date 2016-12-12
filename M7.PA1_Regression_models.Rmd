@@ -1,0 +1,139 @@
+---
+title: "Regression Models Peer Assignment"
+output: pdf_document
+---
+####**Victor D. Saldaña C.**
+######PhD(c) in Geoinformatics Engineering
+######Technical University of Madrid (Spain)
+######https://es.linkedin.com/in/victorsalda
+######https://github.com/victorsalda
+######*October, 2016*
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+###**Summary.**
+
+This is the report of the Regression Models Peer Assignment. It is divided in 6 points. The data that is going to be used come from the "mtcars data set" from R. It starts with a basic summary and exploratory data analysis, then a regression analysis and finally it has an appendix with results and figures. 
+
+###**1. Load packages.**
+
+Let's load the packages we need. If you haven't download them do it first.
+```{r}
+library("knitr")
+library("datasets")
+library("ggplot2")
+library("MASS")
+```
+
+###**2. Load the data.**
+
+The data we are going to use in this assignment is the "mtcars data set" from R.
+This data set contains the fuel consumption and 10 aspects of automobile design
+and the performance for 32 automobiles (1973–74 models). The data was extracted from the 1974 Motor Trend US magazine. The variables are:
+1.  mpg: Miles/(US) gallon.
+2.  cyl: Number of cylinders.
+3.  disp:	Displacement (cu.in.).
+4.  hp:	Gross horsepower.
+5.  drat:	Rear axle ratio.
+6.  wt: Weight (1000 lbs).
+7.  qsec:	 1/4 mile time.
+8.  vs: V/S.
+9.  am:	Transmission (0 = automatic, 1 = manual).
+10. gear: Number of forward gears.
+11. carb: Number of carburettors.
+
+```{r echo=FALSE}
+data("mtcars")
+df<-mtcars
+```
+
+###**3. Basic summary and exploratory data analysis.**
+
+Let's summarize and do some tables and quick plots. Let’s start with a summary of the data. Then let's do a scatter plot matrix to have an idea of the possible relations among all the predictors with each other. In the Appendix A, we can see the summary of all the variables of the data with basic statistics. In the Appendix B, we can see the relation among all the variables. By the way, one import relation in the Appendix B is the transmission versus miles per gallon. In that plot is clear that the manual cars have a better performance in average than the automatic. This can be reconfirmed in the box plot presented in the Appendix C (red lines indicate the mean).  
+
+
+###**4. Regression analysis.** 
+
+The transmission might not be the unique important predictor. To analyse others variables that influence the performance of cars we are going to use a multiple linear regression analysis.
+
+
+**Data pre-processing.**
+
+In the data set there are 8 numeric and 2 categorical predictors. These last two are "vs" that is type of motor (0 = V engine, 1 = straight engine) and “am” that is type of transmission (0 = automatic, 1 = manual). These variables are dummy coded so they don't need any recoding task.
+
+
+**Model selection and model fitting.**
+
+It’s well known that meaningful insights depend on selecting an appropriate model. In this case a multiple linear model is going to be used. There is a response variable “mpg” (miles per US gallon) that might be function of the combination up to 10 predictors (8 numeric and 2 categorical). Therefore, 1024 (2^10) models are possible. To select the best model (or at least a good one) some approaches have been developed along the years. One classical approach is to fit a model and then evaluate the p values of the predictors. Other approach could be to consider only the predictors based on the experience of the analyst or on the information on literature. However, this doesn’t guarantee a good model because might be very subjective. Other approach might be “graphical”, i.e., plot the response variable against every predictor as in the scatter plot matrix (Appendix A) and drop those predictors that don’t show a strong “graphical correlation”. One more time, this might be a good start but just to have a general vision of the behaviour of the correlations. Moreover, factors such as scale and the bias of the analyst would affect the selection. To avoid all this some technical approaches have been develop such as the adjusted R^2, the Akaike's Information Criterion (AIC) and the Schwarz Bayesian Information Criterion. In this case two models are going to be fit. One with all the predictors to evaluate which predictors would have been dropped if the p value approach would have been applied and the other one is the AIC, one of the most common, to fit a multiple linear model.                                       
+
+
+**Interpretation of the coefficient**
+
+In the case of the model with all the predictors we are going to use the “p value approach”. The p-value for each term tests the null hypothesis that the coefficient is zero, i.e., the predictor has no effect. So, those predictors with p values > 0.05 have no effect in the model and should be dropped from it. Conversely, a p-value < 0.05 indicates that the null hypothesis can be rejected, i.e. the predictor has effect and shouldn’t be dropped from the model. However, this may not be a good strategy because the p values are affected if the predictors are correlated which violates one of the main assumption of the multiple linear regression model, i.e., “multicollinearity”. In this case (Appendix D), all the predictors should be dropped because de p-value of all of them is greater 0.05 which is nonsense. The more important predictors, according to the p value, would be wt: weight (1000 lbs), am: transmission (0 = automatic, 1 = manual) and qsec: 1/4 mile time. For instance, the coefficient of the predictor wt indicate that every 1000 lbs less the mpg (miles/(US) gallon) is reduced by 3.72 times. 
+
+On the other hand, there are 1024 candidate models to be evaluated with the AIC. Nevertheless, evaluate all of them may not be possible. Therefore, a different approach is needed to subset some of them and then calculate the AIC. In this case we are going to choose the model by AIC in a stepwise algorithm using the step function with defaults parameters. Under this criterion the best model would the one with the lowest AIC. The final model has three predictors (Appendix E). Not surprisingly, these are the most important of the first case. Likewise, once again the wt: weight (1000 lbs) is the more significant.  
+
+
+###**5. Residual diagnostics**
+
+It is well known that a suitable statistical modelling involves an inspection of the residuals. This is good for a lot of thing such as the evaluation of the assumptions of the model and to detect outliers. If a model is formulated and fitted properly the residuals plots have to show some characteristics. There are several kind of residuals the raw (classical), standardized, studentized, etc. We are going to use in this case the "externally studentized residuals". These residuals are much less affected by some important issues such as lack of independency, different variance, different standard deviation when were standardized or the presence of a extreme residual outliers. 
+
+In this case, in the Appendix F are 2 plots. The left one is a "Normal QQ Plot" which is good to check the assumption that residuals are normal distributed as the errors because they are estimations of them. In the right plot, we can check out more assumptions. This suggests that the variance of the error is no constant, i.e., there is "heteroscedasticity". Also, it seems to be a kind of patter in the plot, a kind of "U" which might mean that the predictors might not be capturing some explanatory information and is leaking to the residuals, for instance, that the assumption of linearity is not right.  Additionally, in the same plot is possible to evaluate is some points might be outlier candidate if they have a value greater than 2.
+
+
+###**6. Appendixes.**
+
+**Appendix A: Summary of the most significant predictors.**
+
+```{r echo=FALSE}
+summary(df)[,c(1,6,7,9)]
+```
+
+**Appendix B: Scatterplot Matrix.**
+
+```{r echo=FALSE, fig.height=5,fig.width=5}
+pairs(mpg ~ ., data = df,main= "Predictors' Scatterplot Matrix")
+```
+
+**Appendix C: Box Plot.**
+
+```{r echo=FALSE, fig.height=4,fig.width=4}
+boxplot(mpg ~ am, data = df,main="Transmission Box Plot",
+col="blue",names=c("Automatic","Manual"),ylab="milles/gallon",xlab="Type")
+abline(h=mean(df[df$am==0,]$mpg), lwd=2,col="red")
+abline(h=mean(df[df$am==1,]$mpg), lwd=2,col="red")
+```
+
+**Appendix D: Model fitted with all the predictors.**
+
+```{r echo=FALSE}
+lm1<-lm(mpg~.,data=df)
+summary(lm1)[4]
+```
+
+**Appendix E: Model fitted with the AIC.**
+
+```{r echo=FALSE}
+lm2<-step(lm(mpg~.,data=df),trace=FALSE)
+summary(lm2)[4]
+```
+
+**Appendix F: Residuals plots.**
+
+```{r fig.height=3, fig.width=6, echo=FALSE}
+par(mfrow=c(1,2))
+
+qqnorm(studres(lm2),ylab="Data Quantiles")
+qqline(studres(lm2))
+
+plot(lm2$fitted.values,studres(lm2),ylim = c(-3,3),ylab = "Ext. Stud. Residuals",xlab="Fitted Values",main="Fitted values vs residuals")
+abline(h=0, lwd=2,col="black")
+abline(h=-2, lwd=2,col="black",lty= 2)
+abline(h=2, lwd=2,col="black",lty= 2)
+for (i in 1 : nrow(df)){ 
+  lines(c(lm2$fitted.values[i], lm2$fitted.values[i]), c(studres(lm2)[i], 0), 
+        col = "blue" , lwd = 2)
+}
+```
