@@ -1,0 +1,44 @@
+---
+Title: "Peer-graded Assignment: R Markdown and Leaflet"
+Output: HTLM
+---
+####**Victor D. Saldaña C.**
+######PhD(c) in Geoinformatics Engineering
+######Technical University of Madrid (Spain)
+######https://es.linkedin.com/in/victorsalda
+######https://github.com/victorsalda
+######*November 12, 2016*
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+###**Summary.**
+
+This is the report of the design of a web page using R Markdown that features a map created with Leaflet.
+
+###**1. Load packages.**
+
+Let's load the packages needed. If you haven't download them do it first.
+
+```{r echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
+library("leaflet")
+```
+
+###**2. Map of the Center of Madrid, Sapin.**
+
+```{r echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
+MyMap=leaflet()
+MyMap=addTiles(MyMap)
+MyMap=addMarkers(MyMap,lat= 40.42,lng=-3.70,popup="Madrid")
+MyMap
+```
+
+```{r echo=FALSE, eval=FALSE, message=FALSE, warning=FALSE}
+#Second way of generating a map.
+MyMap<-leaflet() %>%
+  addTiles()
+MyMap
+```
+
+

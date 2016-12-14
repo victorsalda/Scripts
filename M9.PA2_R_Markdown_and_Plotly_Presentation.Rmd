@@ -1,0 +1,36 @@
+---
+title: "R Markdown & Plotly"
+author: "Victor D. Saldaña C."
+date: "13 November 2016"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Summary.
+
+This is the report of the design of a web page using R Markdown that features a plot created with Plotly package. The "airquality" data set is going to be use
+
+
+## Load packages.
+
+Let's load the packages needed. If you haven't download them do it first.
+
+```{r echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
+library("plotly","ggplot2","airquality")
+airquality<-airquality
+```
+
+## Plot created with Plotly.
+
+Let's create the plot a Wind vs Temperature using some basic plotly commands. 
+
+```{r echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}
+plot_ly(airquality,x=wind,y=~Temp,mode="markers",color =~Day, 
+        name = "Wind vs Temperture",size=~Ozone)
+#the use of tilde "~" is necesary in most veraibles but not clear. More info: 
+#https://github.com/ropensci/plotly/issues/765
+```
+

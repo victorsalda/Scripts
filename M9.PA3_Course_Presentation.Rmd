@@ -1,0 +1,48 @@
+---
+title: "Course Project"
+author: "Victor D. Saldaña C."
+date: "13 November 2016"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Introduction.
+
+This presentation is part of the  Peer-graded Assignment: Course Project: Shiny Application and Reproducible Pitch. The goal is to pinch the Web App. It has five slides including the first one and this one. It starts with a summary of the Web App follow by a description of it and, finally, an example of its code.
+
+Web App files can be fund on: 
+https://github.com/victorsalda/Scripts_R
+
+## Summary of the Web App.
+
+This Web App evaluates "The Central Limit Theorem" one of the main concepts
+in statistics and, thereby, in Data Science. 
+
+This theorem states that the distribution of the mean value of a variable obtained from a sample that comes from a population that has any underlying distribution approaches a normal distribution as the sample size increases. 
+ 
+## Description.
+
+The user has to select the number of samples to be chosen from the uniform distribution and the size of them. Then, the Web App shows three figures: 
+
+Figure 1. The a histogram with the frequencies of the mean value of the number selected of samples of the specific size.
+
+Figure 2. A normal QQ plot to evaluate (graphically) the normality of the sampling distribution of the sample mean.  
+
+Figure 3. The uniform distribution of the population of the values of the variable.
+
+## Example of the code.
+
+Case: 1000 samples of 20 individuals chosen without replacement form a population uniformly distributed. 
+
+
+```{r echo=TRUE, dpi=60}
+mean<-vector() 
+       for (i in 1:1000){
+         mean[i]<-mean(sample(1:1000000, 20, replace=F))
+       }
+hist(mean, breaks=15, col="blue",main = "Figure 1. Sampling 
+     distribution of the sample mean")
+```
