@@ -8,4 +8,5 @@ pollutantmean<-function(directory,pollutant,id=1:332){
         } 
         dat_subset<-dat[,pollutant]
         mean(dat_subset,na.rm=TRUE)
+        print()
 }

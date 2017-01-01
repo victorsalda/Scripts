@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang = "en-US" >
+<head>
+    <meta name="author" content="Victor D. Saldaña C.">
+
+    <title>My first web page</title>
+
+    <!-- rel attribute defines the type of relationship-->
+    <!-- type attribute specifies the media type of the linked document in this
+    case media type "text" and subtype "css"
+
+Do not add a space between the property value and the unit (such as margin-left: 20 px;). The correct way is: margin-left: 20px-->
+
+    <link rel = "stylesheet" type = "text/css" href = "style.css"/>
+
+    <style>
+        #AA {co
+            lor: blue}
+        .class_1{color: blue}
+        .class_2{font-style: italic;}
+        .class_3{color: blue; font-style: italic;}
+        a:link {background: yellow}
+        td {color: brown}
+        table{background: yellow; height:8%;width:18%}
+    </style>
+
+</head>
+
+<body>
+    <form action="action_page.php">
+        <input list="browsers" name="browser">
+            <datalist id="browsers">
+                <option value="Internet Explorer">
+                <option value="Firefox">
+                <option value="Chrome">
+                <option value="Opera">
+                <option value="Safari">
+            </datalist>
+
+  <input type="submit">
+    </form>
+
+    <form>
+        <select name="cars">
+            <option value="volvo">Volvo</option>
+            <option value="saab">Saab</option>
+            <option value="fiat">Fiat</option>
+            <option value="audi">Audi</option>
+        </select>
+        <br><br>
+
+        <textarea name="message" rows="10" cols="30">
+        The cat was playing in the garden.
+        </textarea>
+        <br><br>
+
+        <button type="button" onclick="alert('Hello World!')">Click Me!</button>
+    </form>
+
+    <form action="mailto:victorsalda@hotmail.com" method="post" enctype="text/plain">
+        <h2>Send e-mail to someone@example.com:</h2>
+        Name:<br>
+        <input type="text" name="name"><br>
+        E-mail:<br>
+        <input type="text" name="mail"><br>
+        Comment:<br>
+        <input type="text" name="comment" size="50"><br><br>
+        <input type="submit" value="Send">
+        <input type="reset" value="Reset">
+    </form>
+    <form>
+        <fieldset>
+            <legend>Personal information:</legend>
+            First name:<br>
+            <input type="text" name="firstname"><br>
+            Last name:<br>
+            <input type="text" name="lastname">
+        </fieldset>
+    </form>
+
+    <form>
+        <input type="radio" name="gender" value="male" checked> Male<br>
+        <input type="radio" name="gender" value="female"> Female<br>
+        <input type="radio" name="gender" value="other"> Other
+    </form>
+
+    <form action="action_page.php">
+        First name:<br>
+        <input type="text" name="firstname" value="Mickey">
+        <br>
+        Last name:<br>
+        <input type="text" name="lastname" value="Mouse">
+        <br><br>
+        <input type="submit" value="Submit">
+        <p>If you click the "Submit" button, the form-data will be sent to a page called "action_page.php".</p>
+    </form>
+
+
+    <h2 style="background-color:DarkOrange">
+    Background-color set by using orange
+    </h2>
+
+    <table>
+        <tr><th>Menu</th><th>Price</th><tr>
+        <tr><td>Hamburguesa</td><td>10</td><tr>
+        <tr><td>Pizza</td><td>9</td><tr>
+        <tr><td style=background:black;color:blue;text-align:center;vertical:top>Pan</td>
+            <td style=text-align:center>3</td><tr>
+    </table>
+
+    <h1>Welcome! here we go</h1>
+    <h2>Welcome! here we go</h2>
+    <h3>Welcome! here we go</h3>
+    <!-- No necessary final tags -->
+    <h4>Welcome! here we go
+    <h5>Welcome! here we go
+    <h6>Welcome! here we go
+
+    <section>
+        <h4>Welcome! here we go
+        <!--Tell the browser about another language in a part of a paragraph-->
+        <p>Oh well, <span lang="fr">c'est la vie</span>, as they say in France.</p>
+    </section>
+
+    <ul>
+        <li>First item</li>
+        <li>Second item</li>
+        <li>Third item</li>
+        <li>Fourth item</li>
+        <li>Fifth item</li>
+    </ul>
+
+    <ol start="10" reversed>
+        <li>First item</li>
+        <li>Second item</li>
+        <li>Third item</li>
+        <li>Fourth item</li>
+        <li>Fifth item</li>
+    </ol>
+
+    <ol type="A" >
+        <li id="AA" >First item</li>
+        <li>Second item</li>
+        <li>Third item</li>
+        <li>Fourth item</li>
+        <li>Fifth item</li>
+    </ol>
+
+    <!--"<i>" and "<em> (em=emphasis)" do the same but eh second makes emphasis
+    same to <b> and </strong>-->
+    <br><br>
+    <p class="a"> HyperText Markup Language <sup>(HTML)</sup> is the <i>standard
+        <sub>markup</sub> language</i> for creating web pages and <b>web
+        applications</b>. With <em>Cascading Style Sheets</em> (CSS), and
+        <strong>JavaScript</strong>, it forms a triad of cornerstone technologies
+        for the World Wide Web. Web browsers receive HTML documents from a
+        webserver or <mark>from local</mark> storage and <u>render them
+        into</u> multimedia web pages.
+    </p>
+
+    <p class="class_1 class_2"> HyperText Markup Language <sup>(HTML)</sup> is the <i>standard
+        <sub>markup</sub> language</i> for creating web pages and <b>web
+        applications</b>. With Cascading Style Sheets (CSS), and
+        JavaScript, it forms a triad of cornerstone technologies
+        for the World Wide Web. Web browsers receive HTML documents from a
+        webserver or from local storage and render them
+        into multimedia web pages.
+    </p>
+
+    <p class="class_3"> HyperText Markup Language <sup>(HTML)</sup> is the <i>standard
+        <sub>markup</sub> language</i> for creating web pages and <b>web
+        applications</b>. With Cascading Style Sheets (CSS), and
+        JavaScript, it forms a triad of cornerstone technologies
+        for the World Wide Web. Web browsers receive HTML documents from a
+        webserver or from local storage and render them
+        into multimedia web pages.
+    </p>
+
+    <p>HyperText Markup Language (HTML)is the standard
+       markup language for creating web pages and.
+   </p>
+   <br><br>
+
+   <img src="Doha (4).jpg" width="200" class="rotateimg270">
+   <br><br>
+
+   <a href="https://www.google.es">Google</a>
+   <br><br>
+
+   <div>
+        <audio src="Arroyito.mp3" loop controls>
+   </div>
+        <br><br>
+
+   <a href="#sec_1">Head</a>
+   <br>
+
+</body>
+</html>

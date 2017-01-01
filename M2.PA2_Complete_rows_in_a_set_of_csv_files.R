@@ -26,7 +26,7 @@ complete <- function(dir, id){
     }
     #Set back the actual working directory.
     setwd(wd)
-    
+     
     #Create a data.frame with two columns id and com_obs
     datacomplete<-data.frame(id,com_obs)
     
