@@ -465,7 +465,6 @@ for i, j in zip(test, test2):
 
 animals = ["Tiger", "Bear", "Moose"]
 pd.Series(animals)
-
 numbers = [1, 2, 3]
 pd.Series(numbers)
 
